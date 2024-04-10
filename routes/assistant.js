@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
+// Import the assistant controller methods
 const {
   createAssistant,
   getAssistant,
