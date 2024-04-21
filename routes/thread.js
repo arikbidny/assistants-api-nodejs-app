@@ -4,6 +4,6 @@ const router = express.Router();
 const { createThread } = require("../controllers/assistantController");
 
 // Thread routes
-router.route("/thread").get(createThread);
+router.route("/thread").post(createThread);
 
 module.exports = router;

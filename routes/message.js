@@ -3,7 +3,7 @@ const router = express.Router();
 
 const { addMessage } = require("../controllers/assistantController");
 
-// Thread routes
+// Message routes
 router.route("/message").post(addMessage);
 
 module.exports = router;

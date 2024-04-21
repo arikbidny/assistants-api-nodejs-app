@@ -20,10 +20,9 @@ const assistantsClient = new AssistantsClient(
 exports.createAssistant = catchAsyncErrors(async (req, res, next) => {
   console.log("Creating a new assistant...");
   const assistant = await assistantsClient.createAssistant({
-    model: "gpt41106",
-    name: "JS Math Tutor",
-    instructions:
-      "You are a personal math tutor. Write and run code to answer math questions.",
+    model: "<DeploymentName>",
+    name: "<AssistantName>",
+    instructions: "<AssistantInstructions>",
     tools: [{ type: "code_interpreter" }],
   });
   assistantId = assistant.id;
@@ -35,8 +34,11 @@ exports.createAssistant = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// @desc Create an assistant
+// @route POST /api/dynamic-assistant
+// @access Public
 exports.createDynamicAssistant = catchAsyncErrors(async (req, res, next) => {
-  const { name, instructions, model } = req.body;
+  const { name, instructions, model, tools } = req.body;
 
   // Check if the name, instructions, model exists
   if (!name || !instructions || !model) {
@@ -50,7 +52,7 @@ exports.createDynamicAssistant = catchAsyncErrors(async (req, res, next) => {
     model: model,
     name: name,
     instructions: instructions,
-    tools: [{ type: "code_interpreter" }],
+    tools: tools,
   });
   assistantId = assistant.id;
 
@@ -76,8 +78,8 @@ exports.getAssistant = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-// @desc Get an assistant
-// @route GET /api/thread
+// @desc POST a thread
+// @route POST /api/thread
 // @access Public
 exports.createThread = catchAsyncErrors(async (req, res, next) => {
   console.log("Creating a new thread...");
@@ -89,6 +91,9 @@ exports.createThread = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// @desc Post a message to a thread
+// @route POST /api/message
+// @access Public
 exports.addMessage = catchAsyncErrors(async (req, res, next) => {
   const { message, threadId } = req.body;
   addMessage(threadId, message).then((message) => {
@@ -105,15 +110,18 @@ exports.addMessage = catchAsyncErrors(async (req, res, next) => {
         checkingStatus(res, threadId, run.id);
       }, 5000);
     });
-
-    // res.status(200).json({
-    //   success: true,
-    //   message: message,
-    // });
   });
 });
 
-// Helper functions
+////////////////////// Helper functions //////////////////////
+
+/**
+ * Adds a message to a thread.
+ *
+ * @param {string} threadId - The ID of the thread.
+ * @param {string} message - The message to be added.
+ * @returns {Promise<Object>} - A Promise that resolves to the response object.
+ */
 async function addMessage(threadId, message) {
   const response = await assistantsClient.createMessage(
     threadId,
@@ -123,6 +131,12 @@ async function addMessage(threadId, message) {
   return response;
 }
 
+/**
+ * Runs the assistant for the specified thread.
+ *
+ * @param {string} threadId - The ID of the thread.
+ * @returns {Promise<Object>} - The response from the assistant.
+ */
 async function runAssistant(threadId) {
   const response = await assistantsClient.createRun(threadId, {
     assistantId: assistantId,
@@ -133,6 +147,13 @@ async function runAssistant(threadId) {
   return response;
 }
 
+/**
+ * Checks the status of a run and retrieves messages if the run is completed.
+ * @param {object} res - The response object.
+ * @param {string} threadId - The thread ID.
+ * @param {string} runId - The run ID.
+ * @returns {Promise<void>} - A promise that resolves when the status is checked and messages are retrieved.
+ */
 async function checkingStatus(res, threadId, runId) {
   const runObject = await assistantsClient.getRun(threadId, runId);
   console.log(runObject.status);
