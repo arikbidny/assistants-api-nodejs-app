@@ -1,7 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
-// require("dotenv").config();
-// const { OpenAIClient, AzureKeyCredential } = require("@azure/openai");
+
 const {
   AssistantsClient,
   AzureKeyCredential,
@@ -19,8 +18,6 @@ dotenv.config({ path: ".env" });
 
 app.use(express.json()); // Middleware to parse JSON bodies
 // Middkeware to handle errors
-
-// https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/openai/openai-assistants
 
 //=========================================================
 //============== ROUTE SERVER =============================

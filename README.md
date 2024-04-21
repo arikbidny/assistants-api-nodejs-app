@@ -49,6 +49,8 @@ Follow these steps to install and run the application:
 
 Please replace `<repository-url>` and `<repository-name>` with the actual URL and name of your repository. Also, replace the environment variables (`DATABASE_URL` and `SECRET_KEY`) with the actual variables your application uses.
 
+Azure Assistants SDK: https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/openai/openai-assistants
+
 ## License
 
 Arik Bidny
